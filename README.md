@@ -1,6 +1,8 @@
 # PhpPipeline
 Hilarious implementation of chainable `callable` calls.
 
+https://github.com/thephpleague/pipeline is much more _appropriate_, but this is pretty cool too.
+
 ###Example
 ```php
 class Arr
