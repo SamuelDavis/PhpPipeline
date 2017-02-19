@@ -13,12 +13,12 @@ $startingContainer = [
 
 class Arr
 {
-    public static function splitKey(string $key, string $separator = '.')
+    public static function splitKey(string $key, string $separator = '.'): array
     {
         return explode($separator, $key);
     }
 
-    public static function nest(array $keys, $value)
+    public static function nest(array $keys, $value): array
     {
         $valueKey = array_pop($keys);
         $container = [];
@@ -31,16 +31,16 @@ class Arr
         return $container;
     }
 
-    public static function merge()
+    public static function merge(): array
     {
-        return array_merge_recursive(...array_map(function ($thing) {
+        return array_merge_recursive(...array_map(function ($thing): array {
             return is_array($thing) ? $thing : [$thing];
         }, array_reverse(func_get_args())));
     }
 
-    public static function set(string $key, $value, array $container)
+    public static function set(string $key, $value, array $container): array
     {
-        return (new Pipe())
+        return (new Pipe)
             ->into([static::class, 'splitKey'])
             ->into([static::class, 'nest'], $value)
             ->into([static::class, 'merge'], $container)
@@ -48,14 +48,14 @@ class Arr
     }
 }
 
-$nestingHyphensPipeline = (new Pipe())
+$nestingHyphensPipeline = (new Pipe)
     ->into([Arr::class, 'splitKey'], '-')
     ->into([Arr::class, 'nest'], 'Foobar');
 
-$mergingPipeline = (new Pipe())
+$mergingPipeline = (new Pipe)
     ->into([Arr::class, 'merge'], $startingContainer);
 
-$endingContainer = (new Pipe())
+$endingContainer = (new Pipe)
     ->into($nestingHyphensPipeline)
     ->into($mergingPipeline)
     ->__invoke('foo-bar-biz-baz');
