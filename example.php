@@ -4,66 +4,22 @@ use Pipe\Pipe;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-class Arr
-{
-    public static function splitKey(string $key, string $separator = '.'): array
-    {
-        return explode($separator, $key);
-    }
+$splitKey = function (string $str) { // return an array
+    return [explode('.', $str)];
+};
 
-    public static function nest(array $keys, $value): array
-    {
-        $valueKey = array_pop($keys);
-        $container = [];
-        $depth = &$container;
-        foreach ($keys as $key) {
-            $depth[$key] = [];
-            $depth = &$depth[$key];
-        }
-        $depth[$valueKey] = $value;
-        return $container;
-    }
+$head = function (array $arr) { // return a string and an array
+    return [array_shift($arr), $arr];
+};
 
-    public static function merge(): array
-    {
-        return array_merge_recursive(...array_map(function ($thing): array {
-            return is_array($thing) ? $thing : [$thing];
-        }, array_reverse(func_get_args())));
-    }
+$upcase = function (string $str) { // return just a string
+    return strtoupper($str);
+};
 
-    public static function set(string $key, $value, array $container): array
-    {
-        return (new Pipe)
-            ->into([static::class, 'splitKey'])
-            ->into([static::class, 'nest'], $value)
-            ->into([static::class, 'merge'], $container)
-            ->__invoke($key);
-    }
-}
-
-$startingContainer = [
-    'foo' => [
-        'thud' => true,
-        'bar' => [],
-    ],
-];
-
-$nestingHyphensPipeline = (new Pipe)
-    ->into([Arr::class, 'splitKey'], '-')
-    ->into([Arr::class, 'nest'], 'Foobar');
-
-$mergingPipeline = (new Pipe)
-    ->into([Arr::class, 'merge'], $startingContainer);
-
-$endingContainer = (new Pipe('foo-bar-biz-baz'))
-    ->into($nestingHyphensPipeline)
-    ->into($mergingPipeline)
+$result = (new Pipe('foo.bar.biz.baz', [Pipe::RETURN_MANY]))
+    ->into($splitKey)
+    ->into($head)
+    ->into($upcase)
     ->__invoke();
-
-$result = [
-    'starting' => $startingContainer,
-    'ending' => $endingContainer,
-    'Arr::set' => Arr::set('foo.bar.biz.baz', 'Foobar', $startingContainer),
-];
 
 echo str_replace(['\/'], ['/'], json_encode($result, JSON_PRETTY_PRINT)) . "\n";
