@@ -55,10 +55,10 @@ $nestingHyphensPipeline = (new Pipe)
 $mergingPipeline = (new Pipe)
     ->into([Arr::class, 'merge'], $startingContainer);
 
-$endingContainer = (new Pipe)
+$endingContainer = (new Pipe('foo-bar-biz-baz'))
     ->into($nestingHyphensPipeline)
     ->into($mergingPipeline)
-    ->__invoke('foo-bar-biz-baz');
+    ->__invoke();
 
 $result = [
     'starting' => $startingContainer,
