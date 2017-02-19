@@ -1,0 +1,16 @@
+{
+  "name": "samueldavis/pipe",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Samuel Davis",
+      "email": "samueljakdavis@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Pipe\\": "src/"
+    }
+  },
+  "require": {}
+}
