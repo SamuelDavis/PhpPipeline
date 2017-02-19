@@ -3,13 +3,6 @@ Hilarious implementation of chainable `callable` calls.
 
 ###Example
 ```php
-$startingContainer = [
-    'foo' => [
-        'thud' => true,
-        'bar' => [],
-    ],
-];
-
 class Arr
 {
     public static function splitKey(string $key, string $separator = '.'): array
@@ -46,6 +39,13 @@ class Arr
             ->__invoke($key);
     }
 }
+
+$startingContainer = [
+    'foo' => [
+        'thud' => true,
+        'bar' => [],
+    ],
+];
 
 $nestingHyphensPipeline = (new Pipe)
     ->into([Arr::class, 'splitKey'], '-')

@@ -4,13 +4,6 @@ use Pipe\Pipe;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$startingContainer = [
-    'foo' => [
-        'thud' => true,
-        'bar' => [],
-    ],
-];
-
 class Arr
 {
     public static function splitKey(string $key, string $separator = '.'): array
@@ -47,6 +40,13 @@ class Arr
             ->__invoke($key);
     }
 }
+
+$startingContainer = [
+    'foo' => [
+        'thud' => true,
+        'bar' => [],
+    ],
+];
 
 $nestingHyphensPipeline = (new Pipe)
     ->into([Arr::class, 'splitKey'], '-')
