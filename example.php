@@ -31,3 +31,4 @@ $getResult = (new Pipe('foo bar'))
     ->into([$stringHelper, 'concat'], 'fiz');
 
 var_dump($getResult());
+echo str_replace('{}', 'lambda', json_encode($getResult, JSON_PRETTY_PRINT));

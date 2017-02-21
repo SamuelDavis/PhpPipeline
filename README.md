@@ -32,8 +32,31 @@ $getResult = (new Pipe('foo bar'))
     ->into([$stringHelper, 'concat'], 'fiz');
 
 var_dump($getResult());
+echo str_replace('{}', 'lambda', json_encode($getResult, JSON_PRETTY_PRINT));
 ```
 ```
-~/code/PhpPipeline/example.php:24:
+~/code/pipe/example.php:33:
 string(6) "BARfiz"
+{
+    "0": "foo bar",
+    "1": [
+        "strtoupper"
+    ],
+    "2": [
+        lambda
+    ],
+    "3": [
+        [
+            "Remover",
+            "pop"
+        ]
+    ],
+    "4": [
+        [
+            lambda,
+            "concat"
+        ],
+        "fiz"
+    ]
+}
 ```
