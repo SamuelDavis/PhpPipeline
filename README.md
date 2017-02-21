@@ -1,103 +1,30 @@
 # PhpPipeline
 Hilarious implementation of chainable `callable` calls.
 
-https://github.com/thephpleague/pipeline is much more _appropriate_, but this is pretty cool too.
+https://github.com/thephpleague/pipeline is much more _appropriate_, but this is pretty cool too. I appreciate how the state isn't obscured because the thing itself is the state.
 
-###Example
+### Example Usage
 ```php
 class Arr
 {
-    public static function splitKey(string $key, string $separator = '.'): array
+    public static function pop(array $arr = [])
     {
-        return explode($separator, $key);
-    }
-
-    public static function nest(array $keys, $value): array
-    {
-        $valueKey = array_pop($keys);
-        $container = [];
-        $depth = &$container;
-        foreach ($keys as $key) {
-            $depth[$key] = [];
-            $depth = &$depth[$key];
-        }
-        $depth[$valueKey] = $value;
-        return $container;
-    }
-
-    public static function merge(): array
-    {
-        return array_merge_recursive(...array_map(function ($thing): array {
-            return is_array($thing) ? $thing : [$thing];
-        }, array_reverse(func_get_args())));
-    }
-
-    public static function set(string $key, $value, array $container): array
-    {
-        return (new Pipe)
-            ->into([static::class, 'splitKey'])
-            ->into([static::class, 'nest'], $value)
-            ->into([static::class, 'merge'], $container)
-            ->__invoke($key);
+        return array_pop($arr);
     }
 }
 
-$startingContainer = [
-    'foo' => [
-        'thud' => true,
-        'bar' => [],
-    ],
-];
+$explodeCurry = function (string $string) {
+    return explode(' ', $string);
+};
 
-$nestingHyphensPipeline = (new Pipe)
-    ->into([Arr::class, 'splitKey'], '-')
-    ->into([Arr::class, 'nest'], 'Foobar');
+$getResult = (new Pipe('foo bar'))
+    ->into('strtoupper')
+    ->into($explodeCurry)
+    ->into([Arr::class, 'pop']);
 
-$mergingPipeline = (new Pipe)
-    ->into([Arr::class, 'merge'], $startingContainer);
-
-$endingContainer = (new Pipe('foo-bar-biz-baz'))
-    ->into($nestingHyphensPipeline)
-    ->into($mergingPipeline)
-    ->__invoke();
-
-$result = [
-    'starting' => $startingContainer,
-    'ending' => $endingContainer,
-    'Arr::set' => Arr::set('foo.bar.biz.baz', 'Foobar', $startingContainer),
-];
-
-echo str_replace(['\/'], ['/'], json_encode($result, JSON_PRETTY_PRINT)) . "\n";
+var_dump($getResult());
 ```
-
-###Output
-```json
-{
-    "starting": {
-        "foo": {
-            "thud": true,
-            "bar": []
-        }
-    },
-    "ending": {
-        "foo": {
-            "thud": true,
-            "bar": {
-                "biz": {
-                    "baz": "Foobar"
-                }
-            }
-        }
-    },
-    "Arr::set": {
-        "foo": {
-            "thud": true,
-            "bar": {
-                "biz": {
-                    "baz": "Foobar"
-                }
-            }
-        }
-    }
-}
+```
+~/code/PhpPipeline/example.php:24:
+string(3) "BAR"
 ```
