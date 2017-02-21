@@ -1,6 +1,6 @@
 <?php
 
-use Pipe\Pipe;
+use PhpPipeline\Pipe;
 
 require_once __DIR__ . '/vendor/autoload.php';
 

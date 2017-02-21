@@ -1,6 +1,6 @@
 <?php
 
-namespace Pipe;
+namespace PhpPipeline;
 
 use ArrayObject;
 
@@ -37,7 +37,7 @@ class Pipe extends ArrayObject
             } else {
                 array_unshift($args, $result);
             }
-            return call_user_func_array($cb, $args);
+            return $cb(...$args);
         }, $input ?: $this[0]);
     }
 }

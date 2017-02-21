@@ -1,6 +1,13 @@
 {
   "name": "samueldavis/pipe",
   "type": "library",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:SamuelDavis/PhpPipeline.git"
+    }
+  ],
+  "license": "MIT",
   "authors": [
     {
       "name": "Samuel Davis",
@@ -9,7 +16,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Pipe\\": "src/"
+      "PhpPipeline\\": "src/"
     }
   },
   "require": {}
