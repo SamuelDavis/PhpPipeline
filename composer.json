@@ -1,5 +1,6 @@
 {
   "name": "samueldavis/pipe",
+  "description": "Compose many callables into a single callable.",
   "type": "library",
   "repositories": [
     {
@@ -19,7 +20,9 @@
       "PhpPipeline\\": "src/"
     }
   },
-  "require": {},
+  "require": {
+    "php": "^7.1"
+  },
   "require-dev": {
     "phpspec/phpspec": "^3.2"
   }
