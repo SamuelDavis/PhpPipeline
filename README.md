@@ -5,13 +5,21 @@ https://github.com/thephpleague/pipeline is much more _appropriate_, but this is
 
 ### Example Usage
 ```php
-class Arr
+class Remover
 {
     public static function pop(array $arr = [])
     {
         return array_pop($arr);
     }
 }
+
+$stringHelper = new class
+{
+    public function concat(string $initial, string $addition): string
+    {
+        return $initial . $addition;
+    }
+};
 
 $explodeCurry = function (string $string) {
     return explode(' ', $string);
@@ -20,11 +28,12 @@ $explodeCurry = function (string $string) {
 $getResult = (new Pipe('foo bar'))
     ->into('strtoupper')
     ->into($explodeCurry)
-    ->into([Arr::class, 'pop']);
+    ->into([Remover::class, 'pop'])
+    ->into([$stringHelper, 'concat'], 'fiz');
 
 var_dump($getResult());
 ```
 ```
 ~/code/PhpPipeline/example.php:24:
-string(3) "BAR"
+string(6) "BARfiz"
 ```
