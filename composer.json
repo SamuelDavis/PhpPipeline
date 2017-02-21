@@ -16,7 +16,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Pipe\\": "src/"
+      "PhpPipeline\\": "src/"
     }
   },
   "require": {}
