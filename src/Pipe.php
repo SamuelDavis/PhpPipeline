@@ -26,7 +26,7 @@ class Pipe extends ArrayObject
         return array_reduce(array_slice((array)$this, 1), function ($result, array $args) {
             $cb = array_shift($args);
             array_unshift($args, $result);
-            return call_user_func_array($cb, $args);
+            return $cb(...$args);
         }, $input ?: $this[0]);
     }
 }
