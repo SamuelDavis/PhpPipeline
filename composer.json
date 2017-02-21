@@ -1,5 +1,5 @@
 {
-  "name": "samueldavis/pipe",
+  "name": "samueldavis/php-pipeline",
   "description": "Compose many callables into a single callable.",
   "type": "library",
   "repositories": [
