@@ -6,11 +6,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 class Arr
 {
-    public static function splitKey(string $key, string $separator = '.'): array
-    {
-        return explode($separator, $key);
-    }
-
     public static function nest(array $keys, $value): array
     {
         $valueKey = array_pop($keys);
@@ -23,23 +18,11 @@ class Arr
         $depth[$valueKey] = $value;
         return $container;
     }
-
-    public static function merge(): array
-    {
-        return array_merge_recursive(...array_map(function ($thing): array {
-            return is_array($thing) ? $thing : [$thing];
-        }, array_reverse(func_get_args())));
-    }
-
-    public static function set(string $key, $value, array $container): array
-    {
-        return (new Pipe)
-            ->into([static::class, 'splitKey'])
-            ->into([static::class, 'nest'], $value)
-            ->into([static::class, 'merge'], $container)
-            ->__invoke($key);
-    }
 }
+
+$splitKey = function (string $key, string $separator = '.'): array {
+    return explode($separator, $key);
+};
 
 $startingContainer = [
     'foo' => [
@@ -49,13 +32,18 @@ $startingContainer = [
 ];
 
 $nestingHyphensPipeline = (new Pipe)
-    ->into([Arr::class, 'splitKey'], '-')
+    ->into($splitKey, '-')
     ->into([Arr::class, 'nest'], 'Foobar');
 
 $mergingPipeline = (new Pipe)
-    ->into([Arr::class, 'merge'], $startingContainer);
+    ->into(function (): array {
+        return array_merge_recursive(...array_map(function ($thing): array {
+            return is_array($thing) ? $thing : [$thing];
+        }, array_reverse(func_get_args())));
+    }, $startingContainer);
 
-$endingContainer = (new Pipe('foo-bar-biz-baz'))
+$endingContainer = (new Pipe('FOO-BAR-BIZ-BAZ'))
+    ->into('strtolower')
     ->into($nestingHyphensPipeline)
     ->into($mergingPipeline)
     ->__invoke();
@@ -63,7 +51,6 @@ $endingContainer = (new Pipe('foo-bar-biz-baz'))
 $result = [
     'starting' => $startingContainer,
     'ending' => $endingContainer,
-    'Arr::set' => Arr::set('foo.bar.biz.baz', 'Foobar', $startingContainer),
 ];
 
 echo str_replace(['\/'], ['/'], json_encode($result, JSON_PRETTY_PRINT)) . "\n";
