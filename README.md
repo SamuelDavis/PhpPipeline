@@ -25,35 +25,44 @@ $explodeCurry = function (string $string) {
     return explode(' ', $string);
 };
 
-$getResult = (new Pipe('foo bar'))
+$explodingPipeline = (new Pipe)
     ->into('strtoupper')
-    ->into($explodeCurry)
+    ->into($explodeCurry);
+
+$getResult = (new Pipe('foo bar'))
+    ->into($explodingPipeline)
     ->into([Remover::class, 'pop'])
     ->into([$stringHelper, 'concat'], 'fiz');
 
 var_dump($getResult());
-echo str_replace('{}', 'lambda', json_encode($getResult, JSON_PRETTY_PRINT));
+echo "========\n" . json_encode($getResult, JSON_PRETTY_PRINT);
 ```
 ```
 ~/code/pipe/example.php:33:
 string(6) "BARfiz"
+========
 {
     "0": "foo bar",
     "1": [
-        "strtoupper"
+        {
+            "0": null,
+            "1": [
+                "strtoupper"
+            ],
+            "2": [
+                {}
+            ]
+        }
     ],
     "2": [
-        lambda
-    ],
-    "3": [
         [
             "Remover",
             "pop"
         ]
     ],
-    "4": [
+    "3": [
         [
-            lambda,
+            {},
             "concat"
         ],
         "fiz"
