@@ -23,21 +23,27 @@ class PipeSpec extends ObjectBehavior
     public function it_appends_callables()
     {
         $next = 'strtoupper';
-        $this->into($next)->shouldHaveKeyWithValue(1, [$next]);
+        $this
+            ->into($next)
+            ->shouldHaveKeyWithValue(1, [$next]);
     }
 
     public function it_curries_callable_arguments()
     {
         $next = 'strtoupper';
         $with = 'foo';
-        $this->into($next, $with)->shouldHaveKeyWithValue(1, [$next, $with]);
+        $this
+            ->into($next, $with)
+            ->shouldHaveKeyWithValue(1, [$next, $with]);
     }
 
     public function it_returns_input()
     {
         $input = 'foo';
         $this->beConstructedWith($input);
-        $this->__invoke()->shouldReturn($input);
+        $this
+            ->__invoke()
+            ->shouldReturn($input);
     }
 
     public function it_overrides_input()
@@ -45,7 +51,9 @@ class PipeSpec extends ObjectBehavior
         $initialInput = 'foo';
         $this->beConstructedWith($initialInput);
         $invokingInput = 'bar';
-        $this->__invoke($invokingInput)->shouldReturn($invokingInput);
+        $this
+            ->__invoke($invokingInput)
+            ->shouldReturn($invokingInput);
     }
 
     public function it_transforms_input()
@@ -53,7 +61,10 @@ class PipeSpec extends ObjectBehavior
         $input = 'foo';
         $next = 'strtoupper';
         $expected = $next($input);
-        $this->into($next)->__invoke($input)->shouldReturn($expected);
+        $this
+            ->into($next)
+            ->__invoke($input)
+            ->shouldReturn($expected);
     }
 
     public function it_applies_all_callables()
